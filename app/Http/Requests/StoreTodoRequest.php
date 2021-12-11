@@ -3,6 +3,7 @@
 namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
+use phpDocumentor\Reflection\PseudoTypes\True_;
 
 class StoreTodoRequest extends FormRequest
 {
@@ -13,7 +14,7 @@ class StoreTodoRequest extends FormRequest
      */
     public function authorize()
     {
-        return false;
+        return true;
     }
 
     /**

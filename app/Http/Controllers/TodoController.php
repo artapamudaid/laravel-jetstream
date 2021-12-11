@@ -2,9 +2,8 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Requests\StoreTodoRequest;
-use App\Http\Requests\UpdateTodoRequest;
 use App\Models\Todo;
+use Illuminate\Http\Request;
 
 class TodoController extends Controller
 {
@@ -16,6 +15,7 @@ class TodoController extends Controller
     public function index()
     {
         $todos = Todo::all();
+
         return view('todo.index', [
             'todos' => $todos
         ]);
@@ -28,27 +28,33 @@ class TodoController extends Controller
      */
     public function create()
     {
-        //
+        return view('todo.create');
     }
 
     /**
      * Store a newly created resource in storage.
      *
-     * @param  \App\Http\Requests\StoreTodoRequest  $request
+     * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(StoreTodoRequest $request)
+    public function store(Request $request)
     {
-        //
+        $todo = Todo::create([
+            'todo' => $request->todo
+        ]);
+
+        if ($todo) {
+            return redirect()->route('todo.index');
+        }
     }
 
     /**
      * Display the specified resource.
      *
-     * @param  \App\Models\Todo  $todo
+     * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function show(Todo $todo)
+    public function show($id)
     {
         //
     }
@@ -56,34 +62,42 @@ class TodoController extends Controller
     /**
      * Show the form for editing the specified resource.
      *
-     * @param  \App\Models\Todo  $todo
+     * @param  int  $id
      * @return \Illuminate\Http\Response
      */
     public function edit(Todo $todo)
     {
-        //
+        return view('todo.edit', [
+            'todo' => $todo
+        ]);
     }
 
     /**
      * Update the specified resource in storage.
      *
-     * @param  \App\Http\Requests\UpdateTodoRequest  $request
-     * @param  \App\Models\Todo  $todo
+     * @param  \Illuminate\Http\Request  $request
+     * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(UpdateTodoRequest $request, Todo $todo)
+    public function update(Request $request, Todo $todo)
     {
-        //
+        $todo->todo = $request->todo;
+        $todo->save();
+
+        return redirect()->route('todo.index');
     }
 
     /**
      * Remove the specified resource from storage.
      *
-     * @param  \App\Models\Todo  $todo
+     * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function destroy(Todo $todo)
+    public function destroy($id)
     {
-        //
+        $todo = Todo::findOrFail($id);
+        $todo->delete();
+
+        return redirect()->route('todo.index');
     }
 }
